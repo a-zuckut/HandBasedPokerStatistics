@@ -4,10 +4,10 @@ This handles logic for parsing a Hand and is a container
 '''
 from card import Card
 
-'''
-This class takes in two cards ([]) and outputs a list for a hand
-'''
 class Hand():
+    '''
+    This class takes in two cards ([]) and outputs a list for a hand
+    '''
     def __init__(self, given_str):
         given_str = given_str.strip()
         assert given_str[0] == '[' and given_str[-1] == ']'

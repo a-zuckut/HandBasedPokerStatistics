@@ -2,16 +2,14 @@
 '''
 This class will parse the full pokerstar string
 '''
-import hand
-
 from my_utils import parse_info, parse_betting_round, parse_summary, parse_showdown
 from game import Game
 
-'''
-Parser is taking in a gamestr and outputting a data representation of a poker 
-hand.
-'''
 class Parser():
+    '''
+    Parser is taking in a gamestr and outputting a data representation of a poker
+    hand.
+    '''
     def __init__(self, gamestr):
         self._separate = []
         lines = gamestr.split('\n')
@@ -31,6 +29,7 @@ class Parser():
         )
 
     def populate(self):
+        ''' This method will populate data for this whole function (parsing logic) '''
         self._settings = {}
         _game_id = None
         _players = {}
@@ -59,3 +58,7 @@ class Parser():
                 _rounds.append((bets, cards))
 
         self.data = (_game_id, _players, _rounds, _final, _cards)
+
+    def return_game(self):
+        ''' This will expose the game representation '''
+        return self._representation

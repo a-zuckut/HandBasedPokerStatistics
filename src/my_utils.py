@@ -1,8 +1,15 @@
 # util.py
+'''
+This is the util function mainly for parsing data, will have more utility
+function in the future to be updated. TODO
+'''
 from card import Card
 from hand import Hand
 
 def parse_info(given_str):
+    '''
+    Parse info will parse the initial parts of the poker game
+    '''
     setting = {}
     game, setting["big_blind"] = get_first_data(given_str.pop(0))
     round1 = {}
@@ -14,13 +21,13 @@ def parse_info(given_str):
             # if we want this logic
             pass
         elif "Seat" in line:
-            seat, t = line.split(":")
+            seat, temp = line.split(":")
             seat = num
             num += 1
-            player, t = t.split("(", 1)
+            player, temp = temp.split("(", 1)
             player = player.strip()
-            t = t.split(" ", 1)[0].replace("$", "").strip()
-            players[player] = [None, float(t)] # Pos, $
+            temp = temp.split(" ", 1)[0].replace("$", "").strip()
+            players[player] = [None, float(temp)] # Pos, $
             seats[player] = seat # for index 0
             seats[seat] = player
         elif "small blind" in line or "big blind" in line:
@@ -30,6 +37,13 @@ def parse_info(given_str):
             # some incorrect key
             pass
 
+    fill_first_seats(players, round1, setting, seats)
+
+    fill_complex_seats(players, seats)
+    return game, players, setting, (round1, [])
+
+def fill_first_seats(players, round1, setting, seats):
+    ''' fils BB SB Button '''
     for player in players:
         if player in round1:
             if round1[player] == setting["big_blind"]:
@@ -46,8 +60,10 @@ def parse_info(given_str):
                     small_num = size - 1
                 players[seats[small_num]][0] = "Button"
 
+def fill_complex_seats(players, seats):
+    ''' fills UTG, MP, etc '''
     boolean = True
-    while(boolean):
+    while boolean:
         for player in players:
             if players[player][0] is None:
                 lindex = seats[player] + 1
@@ -74,14 +90,13 @@ def parse_info(given_str):
             if not players[player][0]:
                 boolean = True
                 break
-    return game, players, setting, (round1, [])
-
 
 def get_first_data(given_str):
+    ''' This method will get the first pieces of data for the game '''
     game, given_str = given_str.split(":", 1)
     game = game.split('#', 1)[1]
 
-    given_str, date = given_str.split("-", 1) # can parse date
+    given_str, _ = given_str.split("-", 1) # can parse date
     given_str = given_str.split('(', 1)[1]
     given_str = given_str.split('/')[1]
     given_str = given_str.replace('$', "").replace(')', "")
@@ -90,6 +105,7 @@ def get_first_data(given_str):
 
 
 def parse_betting_round(given_str):
+    ''' This parses each betting round generically '''
     cards = []
     bets = {}
     for line in given_str:
@@ -110,6 +126,7 @@ def parse_betting_round(given_str):
     return bets, cards
 
 def parse_showdown(given_str):
+    ''' This parses the showdown screen '''
     showdown = {} #player: hand
     for line in given_str:
         if 'shows' in line:
@@ -121,7 +138,8 @@ def parse_showdown(given_str):
     return showdown
 
 def parse_summary(given_str):
-    v = given_str.pop(0)
+    ''' This parses the summary screen '''
+    _ = given_str.pop(0)
     setting = {}
     won = {}
     cards = []

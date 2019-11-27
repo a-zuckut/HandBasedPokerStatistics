@@ -1,9 +1,9 @@
 # test_game_parser.py
-
-import pytest
+''' This test tests if the parsing works for the game '''
 from game_parser import Parser
 
 def test_simple():
+    ''' This test will test a simple no showdown game '''
     test = '''PokerStars Game #59937795418:  Hold'em No Limit ($3/$6) - 2009/07/01 0:00:01 ET
         Table 'eZ9obi4Bm6uzF08iPplRdg' 6-max Seat #1 is the button
         Seat 1: ZqHBrNHc6FV5pubHfOX06w ($570 in chips)
@@ -37,6 +37,7 @@ def test_simple():
     Parser(test)
 
 def test_showdown():
+    ''' This test includes showdown functionality '''
     test = '''PokerStars Game #59937794410:  Hold'em No Limit ($0.10/$0.25) - 2009/07/01 0:00:00 ET
         Table 'vgLbwVmy1dOb81ICg4y5+Q' 6-max Seat #6 is the button
         Seat 2: vjkMgvG+N1YrdituSQFzbQ ($25 in chips) 

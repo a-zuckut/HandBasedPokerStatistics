@@ -1,4 +1,7 @@
 # game.py
+'''
+This module will be a storage facility
+'''
 
 class Game():
     '''
@@ -32,10 +35,12 @@ class Game():
             if player in winning and self._bet:
                 self._total[player] = winning[player] - self._bet[player]
 
-        self.settings = settings
+        self._settings = settings
 
-    def settings():
-        return self.settings
+    def settings(self):
+        ''' Returns the settings as defined in game_parser as well as players '''
+        return self.settings, self._players
 
-    def winningCards():
+    def winning_cards(self):
+        ''' returns a tuple of showdown cards and total winnings '''
         return self._showdown, self._total

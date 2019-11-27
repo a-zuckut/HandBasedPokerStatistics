@@ -24,14 +24,6 @@ class Card():
         assert self.rank
         assert self.suit
 
-    ''' return rank '''
-    def rank(self):
-        return self.rank
-
-    ''' return suit '''
-    def suit(self):
-        return self.suit
-
     def __str__(self):
         return self.rank + self.suit
 
