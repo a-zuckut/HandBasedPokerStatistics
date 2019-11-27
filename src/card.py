@@ -1,6 +1,6 @@
 # Card.py
 
-class Card (object):
+class Card():
     '''
       Given the implementation of data given, we will parse in this manner
     '''
@@ -29,19 +29,19 @@ class Card (object):
     def suit(self):
         return self.suit
 
-    def __str__ (self):
+    def __str__(self):
         return self.rank + self.suit
 
     def __repr__(self):
         return self.rank + self.suit
 
-    def __eq__ (self, other):
+    def __eq__(self, other):
         return (self.rank == other.rank) and \
              (self.suit == other.suit)
 
-    def __lt__ (self, other):
+    def __lt__(self, other):
         return self.ranks.index(self.rank) < self.ranks.index(other.rank)
 
-    def __gt__ (self, other):
+    def __gt__(self, other):
         return self.ranks.index(self.rank) > self.ranks.index(other.rank)
 

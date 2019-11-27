@@ -2,11 +2,11 @@
 
 from card import Card
 
-class Hand(object):
+class Hand():
     def __init__(self, str):
         str = str.strip()
         assert str[0] == '[' and str[-1] == ']'
-        assert(len(str) >= 7)
+        assert len(str) >= 7
 
         card = str[1:-1].split(" ")
         card1 = Card(card[0])
@@ -24,17 +24,15 @@ class Hand(object):
         default = self.c[0].rank + self.c[1].rank
         if self.c[0].suit == self.c[1].suit:
             return default + 's' # suited
-        else:
-            if default[0] == default[1]:
-                return default
-            return default + 'o' # suited
+        if default[0] == default[1]:
+            return default
+        return default + 'o' # suited
 
     def __str__(self):
         default = self.c[0].rank + self.c[1].rank
         if self.c[0].suit == self.c[1].suit:
             return default + 's' # suited
-        else:
-            if default[0] == default[1]:
-                return default
-            return default + 'o' # suited
+        if default[0] == default[1]:
+            return default
+        return default + 'o' # suited
 

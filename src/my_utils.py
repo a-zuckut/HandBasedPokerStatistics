@@ -33,7 +33,7 @@ def parse_info(str):
     for p in players:
         if p in round1:
             if round1[p] == setting["big_blind"]:
-                players[p][0] = "BB"
+                players[p][0] = "big_blind"
             else:
                 players[p][0] = "SB"
 
@@ -60,7 +60,7 @@ def parse_info(str):
                 left = players[seats[lindex]][0]
                 right = players[seats[rindex]][0]
                 if right:
-                    if right == "BB":
+                    if right == "big_blind":
                         players[p][0] = "UTG"
                         continue
                 if left:
@@ -85,8 +85,8 @@ def get_first_data(str):
     str = str.split('(', 1)[1]
     str = str.split('/')[1]
     str = str.replace('$', "").replace(')', "")
-    bb = float(str)
-    return game, bb
+    big_blind = float(str)
+    return game, big_blind
 
 
 def parse_betting_round(str):

@@ -1,12 +1,16 @@
 # GameParser.py
-
+'''
+This class will parse the full pokerstar string
+'''
 import hand
 
 from my_utils import parse_info, parse_betting_round, parse_summary, parse_showdown
 from game import Game
 
-# For Pokerstars data
-class Parser(object):
+'''
+For Pokerstar data, using util class
+'''
+class Parser():
     def __init__(self, gamestr):
         self._separate = []
         t = gamestr.split('\n')
@@ -43,7 +47,7 @@ class Parser(object):
         self._game_id, self._players, settings, r1 = parse_info(info)
         self._rounds.append(r1)
         self._settings.update(settings)
-        
+
         for part in self._separate:
             if "SUMMARY" in part[0]:
                 setting, won, cards = parse_summary(part)
@@ -56,4 +60,3 @@ class Parser(object):
             else:
                 bets, cards = parse_betting_round(part)
                 self._rounds.append((bets, cards))
-
