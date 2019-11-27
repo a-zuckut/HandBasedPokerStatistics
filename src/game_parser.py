@@ -8,7 +8,8 @@ from my_utils import parse_info, parse_betting_round, parse_summary, parse_showd
 from game import Game
 
 '''
-For Pokerstar data, using util class
+Parser is taking in a gamestr and outputting a data representation of a poker 
+hand.
 '''
 class Parser():
     def __init__(self, gamestr):

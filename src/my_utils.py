@@ -2,19 +2,19 @@
 from card import Card
 from hand import Hand
 
-def parse_info(str):
+def parse_info(given_str):
     setting = {}
-    game, setting["big_blind"] = get_first_data(str.pop(0))
+    game, setting["big_blind"] = get_first_data(given_str.pop(0))
     round1 = {}
     players = {}
     seats = {}
     num = 0
-    for s in str:
-        if "button" in s:
+    for line in given_str:
+        if "button" in line:
             # if we want this logic
             pass
-        elif "Seat" in s:
-            seat, t = s.split(":")
+        elif "Seat" in line:
+            seat, t = line.split(":")
             seat = num
             num += 1
             player, t = t.split("(", 1)
@@ -23,9 +23,9 @@ def parse_info(str):
             players[player] = [None, float(t)] # Pos, $
             seats[player] = seat # for index 0
             seats[seat] = player
-        elif "small blind" in s or "big blind" in s:
-            player = s.split(":")[0]
-            round1[player] = float(s.split("$")[-1])
+        elif "small blind" in line or "big blind" in line:
+            player = line.split(":")[0]
+            round1[player] = float(line.split("$")[-1])
         else:
             # some incorrect key
             pass
@@ -77,22 +77,22 @@ def parse_info(str):
     return game, players, setting, (round1, [])
 
 
-def get_first_data(str):
-    game, str = str.split(":", 1)
+def get_first_data(given_str):
+    game, given_str = given_str.split(":", 1)
     game = game.split('#', 1)[1]
 
-    str, date = str.split("-", 1) # can parse date
-    str = str.split('(', 1)[1]
-    str = str.split('/')[1]
-    str = str.replace('$', "").replace(')', "")
-    big_blind = float(str)
+    given_str, date = given_str.split("-", 1) # can parse date
+    given_str = given_str.split('(', 1)[1]
+    given_str = given_str.split('/')[1]
+    given_str = given_str.replace('$', "").replace(')', "")
+    big_blind = float(given_str)
     return game, big_blind
 
 
-def parse_betting_round(str):
+def parse_betting_round(given_str):
     cards = []
     bets = {}
-    for line in str:
+    for line in given_str:
         if '$' in line and "collected" not in line:
             player, line = line.split(":", 1)
             if "raises" in line:
@@ -109,9 +109,9 @@ def parse_betting_round(str):
 
     return bets, cards
 
-def parse_showdown(str):
+def parse_showdown(given_str):
     showdown = {} #player: hand
-    for line in str:
+    for line in given_str:
         if 'shows' in line:
             player, line = line.split(":")
             hand = Hand(line[line.find('['):line.find(']')+1])
@@ -120,12 +120,12 @@ def parse_showdown(str):
             pass
     return showdown
 
-def parse_summary(str):
-    v = str.pop(0)
+def parse_summary(given_str):
+    v = given_str.pop(0)
     setting = {}
     won = {}
     cards = []
-    for full_string in str:
+    for full_string in given_str:
         if "pot" in full_string or "Rake" in full_string:
             pot, rake = full_string.split("|")
             setting['pot'] = float(pot.split("$")[1].strip())

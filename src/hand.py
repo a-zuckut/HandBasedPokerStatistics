@@ -1,38 +1,42 @@
 # Hand.py
-
+'''
+This handles logic for parsing a Hand and is a container
+'''
 from card import Card
 
+'''
+This class takes in two cards ([]) and outputs a list for a hand
+'''
 class Hand():
-    def __init__(self, str):
-        str = str.strip()
-        assert str[0] == '[' and str[-1] == ']'
-        assert len(str) >= 7
+    def __init__(self, given_str):
+        given_str = given_str.strip()
+        assert given_str[0] == '[' and given_str[-1] == ']'
+        assert len(given_str) >= 7
 
-        card = str[1:-1].split(" ")
+        card = given_str[1:-1].split(" ")
         card1 = Card(card[0])
         card2 = Card(card[1])
 
         if card2 < card1:
-            self.c = [card1, card2]
+            self.hand = [card1, card2]
         else:
-            self.c = [card2, card1]
+            self.hand = [card2, card1]
 
     def __eq__(self, other):
-        return self.c == other.c
+        return self.hand == other.hand
 
     def __repr__(self):
-        default = self.c[0].rank + self.c[1].rank
-        if self.c[0].suit == self.c[1].suit:
+        default = self.hand[0].rank + self.hand[1].rank
+        if self.hand[0].suit == self.hand[1].suit:
             return default + 's' # suited
         if default[0] == default[1]:
             return default
         return default + 'o' # suited
 
     def __str__(self):
-        default = self.c[0].rank + self.c[1].rank
-        if self.c[0].suit == self.c[1].suit:
+        default = self.hand[0].rank + self.hand[1].rank
+        if self.hand[0].suit == self.hand[1].suit:
             return default + 's' # suited
         if default[0] == default[1]:
             return default
         return default + 'o' # suited
-
