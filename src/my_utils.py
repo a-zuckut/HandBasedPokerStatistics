@@ -1,5 +1,6 @@
 # util.py
 from card import Card
+from hand import Hand
 
 def parseInfo(str):
 	setting = {}
@@ -7,19 +8,21 @@ def parseInfo(str):
 	round1 = {}
 	players = {}
 	seats = {}
+	num = 0
 	for s in str:
 		if "button" in s:
 			# if we want this logic
 			pass
 		elif "Seat" in s:
 			seat, t = s.split(":")
-			seat = int(seat.lower().replace("seat", "").strip())
+			seat = num
+			num += 1
 			player, t = t.split("(", 1)
 			player = player.strip()
 			t = t.split(" ", 1)[0].replace("$", "").strip()
 			players[player] = [None, float(t)] # Pos, $
-			seats[player] = seat - 1 # for index 0
-			seats[seat - 1] = player
+			seats[player] = seat # for index 0
+			seats[seat] = player
 		elif "small blind" in s or "big blind" in s:
 			player = s.split(":")[0]
 			round1[player] = float(s.split("$")[-1])
@@ -37,7 +40,7 @@ def parseInfo(str):
 	for p in players:
 		if p in round1:
 			if round1[p] != setting["big_blind"]:
-				size = len(seats)
+				size = len(seats) / 2
 				sn = seats[p] - 1
 				if sn < 0:
 					sn = size - 1
@@ -72,7 +75,7 @@ def parseInfo(str):
 				b = True
 				break
 
-	return game, players, setting, round1
+	return game, players, setting, (round1, [])
 
 
 def getFirstData(str):
@@ -108,7 +111,37 @@ def parseBettingRound(str):
 	return bets, cards
 
 def parseShowdown(str):
-	pass
+	showdown = {} #player: hand
+	for line in str:
+		if 'shows' in line:
+			player, line = line.split(":")
+			hand = Hand(line[line.find('['):line.find(']')+1])
+			showdown[player] = hand
+		else:
+			pass
+	return showdown
 
 def parseSummary(str):
-	pass
+	v = str.pop(0)
+	setting = {}
+	won = {}
+	cards = []
+	for s in str:
+		if "pot" in s or "Rake" in s:
+			pot, rake = s.split("|")
+			setting['pot'] = float(pot.split("$")[1].strip())
+			setting['rake'] = float(rake.split("$")[1].strip())
+		elif "Board" in s:
+			if '[' in s:
+				line = s.split('[')[-1].replace("]", "")
+				cards = [Card(x) for x in line.split(" ")]
+		elif "Seat" in s:
+			if '$' in s:
+				player, amt = s.split(':')[-1].split('$')
+				player = s.split(" ", 1)[0].strip()
+				amt = float(amt.split(")", 1)[0].strip())
+				won[player] = amt
+		else:
+			# something else
+			pass
+	return setting, won, cards

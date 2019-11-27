@@ -20,6 +20,15 @@ class Hand(object):
     def __eq__(self, other):
         return self.c == other.c
 
+    def __repr__(self):
+        default = self.c[0].rank + self.c[1].rank
+        if self.c[0].suit == self.c[1].suit:
+            return default + 's' # suited
+        else:
+            if default[0] == default[1]:
+                return default
+            return default + 'o' # suited
+
     def __str__(self):
         default = self.c[0].rank + self.c[1].rank
         if self.c[0].suit == self.c[1].suit:
