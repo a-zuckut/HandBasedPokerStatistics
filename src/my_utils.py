@@ -74,7 +74,6 @@ def parseInfo(str):
 			if not players[p][0]:
 				b = True
 				break
-
 	return game, players, setting, (round1, [])
 
 
@@ -145,3 +144,4 @@ def parseSummary(str):
 			# something else
 			pass
 	return setting, won, cards
+
