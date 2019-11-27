@@ -2,9 +2,9 @@
 from card import Card
 from hand import Hand
 
-def parseInfo(str):
+def parse_info(str):
     setting = {}
-    game, setting["big_blind"] = getFirstData(str.pop(0))
+    game, setting["big_blind"] = get_first_data(str.pop(0))
     round1 = {}
     players = {}
     seats = {}
@@ -77,7 +77,7 @@ def parseInfo(str):
     return game, players, setting, (round1, [])
 
 
-def getFirstData(str):
+def get_first_data(str):
     game, str = str.split(":", 1)
     game = game.split('#', 1)[1]
 
@@ -89,7 +89,7 @@ def getFirstData(str):
     return game, bb
 
 
-def parseBettingRound(str):
+def parse_betting_round(str):
     cards = []
     bets = {}
     for line in str:
@@ -109,7 +109,7 @@ def parseBettingRound(str):
 
     return bets, cards
 
-def parseShowdown(str):
+def parse_showdown(str):
     showdown = {} #player: hand
     for line in str:
         if 'shows' in line:
@@ -120,7 +120,7 @@ def parseShowdown(str):
             pass
     return showdown
 
-def parseSummary(str):
+def parse_summary(str):
     v = str.pop(0)
     setting = {}
     won = {}

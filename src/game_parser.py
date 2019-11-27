@@ -2,7 +2,7 @@
 
 import hand
 
-from my_utils import parseInfo, parseBettingRound, parseSummary, parseShowdown
+from my_utils import parse_info, parse_betting_round, parse_summary, parse_showdown
 from game import Game
 
 # For Pokerstars data
@@ -40,20 +40,20 @@ class Parser(object):
 
         # init round
         info = self._separate.pop(0)
-        self._game_id, self._players, settings, r1 = parseInfo(info)
+        self._game_id, self._players, settings, r1 = parse_info(info)
         self._rounds.append(r1)
         self._settings.update(settings)
         
         for part in self._separate:
             if "SUMMARY" in part[0]:
-                setting, won, cards = parseSummary(part)
+                setting, won, cards = parse_summary(part)
                 self._settings.update(setting)
                 self._final = won
                 self._cards = cards
             elif "SHOW" in part[0] and "DOWN" in part[0]:
-                finalist = parseShowdown(part)
+                finalist = parse_showdown(part)
                 self._showdown = finalist
             else:
-                bets, cards = parseBettingRound(part)
+                bets, cards = parse_betting_round(part)
                 self._rounds.append((bets, cards))
 
