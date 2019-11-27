@@ -14,27 +14,26 @@ class Game(object):
     '''
 
     def __init__(self, id, players, rounds, final, settings, cards, showdown=None):
-        self.id = id # game id (assume unique)
-        self.players = players # (id, pos, stack)
+        self._id = id # game id (assume unique)
+        self._players = players # (id, pos, stack)
 
-        self.bet = {p: 0 for p in players}
-        self.winning = {}
-        self.total = {}
+        self._bet = {p: 0 for p in players}
+        self._winning = {}
+        self._total = {}
 
         for r, _ in rounds:
             for p in r:
-                self.bet[p] += r[p]
+                self._bet[p] += r[p]
 
-        self.cards = cards
-        self.showdown = showdown
+        self._cards = cards
+        self._showdown = showdown
 
         for p in final:
-            self.winning[p] = final[p] # ($,Hand)
+            self._winning[p] = final[p] # ($,Hand)
 
-        for p in self.players:
-            if p in self.winning and self.bet:
-                self.total[p] = self.winning[p] - self.bet[p]
+        for p in self._players:
+            if p in self._winning and self._bet:
+                self._total[p] = self._winning[p] - self._bet[p]
         self.bb = settings['big_blind']
         self.rake = settings['rake']
         self.pot = settings['pot']
-
