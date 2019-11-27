@@ -8,7 +8,9 @@ class Game():
         final is amount players won at end
         settings is settings dictionary
     '''
-    def __init__(self, id, players, rounds, final, settings, cards, showdown=None):
+    def __init__(self, data, settings, showdown=None):
+        id, players, rounds, final, cards = data
+
         self._id = id # game id (assume unique)
         self._players = players # (id, pos, stack)
 
@@ -31,3 +33,9 @@ class Game():
                 self._total[p] = winning[p] - self._bet[p]
 
         self.settings = settings
+
+    def settings():
+        return self.settings
+
+    def winningCards():
+        return self._showdown, self._total

@@ -30,28 +30,28 @@ def parse_info(str):
             # some incorrect key
             pass
 
-    for p in players:
-        if p in round1:
-            if round1[p] == setting["big_blind"]:
-                players[p][0] = "big_blind"
+    for player in players:
+        if player in round1:
+            if round1[player] == setting["big_blind"]:
+                players[player][0] = "big_blind"
             else:
-                players[p][0] = "SB"
+                players[player][0] = "SB"
 
-    for p in players:
-        if p in round1:
-            if round1[p] != setting["big_blind"]:
+    for player in players:
+        if player in round1:
+            if round1[player] != setting["big_blind"]:
                 size = len(seats) / 2
-                sn = seats[p] - 1
-                if sn < 0:
-                    sn = size - 1
-                players[seats[sn]][0] = "Button"
+                small_num = seats[player] - 1
+                if small_num < 0:
+                    small_num = size - 1
+                players[seats[small_num]][0] = "Button"
 
-    b = True
-    while(b):
-        for p in players:
-            if players[p][0] is None:
-                lindex = seats[p] + 1
-                rindex = seats[p] - 1
+    boolean = True
+    while(boolean):
+        for player in players:
+            if players[player][0] is None:
+                lindex = seats[player] + 1
+                rindex = seats[player] - 1
                 if lindex == len(seats) / 2:
                     lindex = 0
                 if rindex < 0:
@@ -61,18 +61,18 @@ def parse_info(str):
                 right = players[seats[rindex]][0]
                 if right:
                     if right == "big_blind":
-                        players[p][0] = "UTG"
+                        players[player][0] = "UTG"
                         continue
                 if left:
                     if left == "Button":
-                        players[p][0] = "Cut-Off"
+                        players[player][0] = "Cut-Off"
                     elif left == "Cut-Off" or "Middle-Position":
-                        players[p][0] = "Middle-Position"
+                        players[player][0] = "Middle-Position"
 
-        b = False
-        for p in players:
-            if not players[p][0]:
-                b = True
+        boolean = False
+        for player in players:
+            if not players[player][0]:
+                boolean = True
                 break
     return game, players, setting, (round1, [])
 
@@ -125,23 +125,22 @@ def parse_summary(str):
     setting = {}
     won = {}
     cards = []
-    for s in str:
-        if "pot" in s or "Rake" in s:
-            pot, rake = s.split("|")
+    for full_string in str:
+        if "pot" in full_string or "Rake" in full_string:
+            pot, rake = full_string.split("|")
             setting['pot'] = float(pot.split("$")[1].strip())
             setting['rake'] = float(rake.split("$")[1].strip())
-        elif "Board" in s:
-            if '[' in s:
-                line = s.split('[')[-1].replace("]", "")
+        elif "Board" in full_string:
+            if '[' in full_string:
+                line = full_string.split('[')[-1].replace("]", "")
                 cards = [Card(x) for x in line.split(" ")]
-        elif "Seat" in s:
-            if '$' in s:
-                player, amt = s.split(':')[-1].split('$')
-                player = s.split(" ", 1)[0].strip()
+        elif "Seat" in full_string:
+            if '$' in full_string:
+                player, amt = full_string.split(':')[-1].split('$')
+                player = full_string.split(" ", 1)[0].strip()
                 amt = float(amt.split(")", 1)[0].strip())
                 won[player] = amt
         else:
             # something else
             pass
     return setting, won, cards
-

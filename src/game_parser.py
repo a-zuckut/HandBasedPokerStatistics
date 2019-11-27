@@ -13,9 +13,9 @@ For Pokerstar data, using util class
 class Parser():
     def __init__(self, gamestr):
         self._separate = []
-        t = gamestr.split('\n')
+        lines = gamestr.split('\n')
         temp = []
-        for line in t:
+        for line in lines:
             if '***' in line:
                 self._separate.append(temp)
                 temp = [line.strip()]
@@ -24,39 +24,37 @@ class Parser():
         self._separate.append(temp)
         self.populate()
         self._representation = Game(
-            self._game_id,
-            self._players,
-            self._rounds,
-            self._final,
+            self.data,
             self._settings,
-            self._cards,
             self._showdown
         )
 
     def populate(self):
         self._settings = {}
-        self._game_id = None
-        self._players = {}
-        self._final = {}
-        self._rounds = []
-        self._cards = []
+        _game_id = None
+        _players = {}
+        _final = {}
+        _rounds = []
+        _cards = []
         self._showdown = None
 
         # init round
         info = self._separate.pop(0)
-        self._game_id, self._players, settings, r1 = parse_info(info)
-        self._rounds.append(r1)
+        _game_id, _players, settings, round_one = parse_info(info)
+        _rounds.append(round_one)
         self._settings.update(settings)
 
         for part in self._separate:
             if "SUMMARY" in part[0]:
                 setting, won, cards = parse_summary(part)
                 self._settings.update(setting)
-                self._final = won
-                self._cards = cards
+                _final = won
+                _cards = cards
             elif "SHOW" in part[0] and "DOWN" in part[0]:
                 finalist = parse_showdown(part)
                 self._showdown = finalist
             else:
                 bets, cards = parse_betting_round(part)
-                self._rounds.append((bets, cards))
+                _rounds.append((bets, cards))
+
+        self.data = (_game_id, _players, _rounds, _final, _cards)
