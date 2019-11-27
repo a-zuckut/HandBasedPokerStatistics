@@ -12,11 +12,12 @@ class Game(object):
         final is amount players won at end
         settings is settings dictionary
     '''
-    def __init__(self, id, players, rounds, final, settings):
+
+    def __init__(self, id, players, rounds, final, settings, cards, showdown=None):
         self.id = id # game id (assume unique)
         self.players = players # (id, pos, stack)
 
-        self.bet = {}
+        self.bet = {p: 0 for p in players}
         self.winning = {}
         self.total = {}
 
@@ -24,14 +25,15 @@ class Game(object):
             for p in r:
                 self.bet[p] += r[p]
 
-        self.cards = [Card(s) for _, s in rounds]
+        self.cards = cards
+        self.showdown = showdown
 
         for p in final:
             self.winning[p] = final[p] # ($,Hand)
 
-        for p,_ in self.players:
-            self.total[p] = self.winning[p] - self.bet[p]
-
+        for p in self.players:
+            if p in self.winning and self.bet:
+                self.total[p] = self.winning[p] - self.bet[p]
         self.bb = settings['big_blind']
         self.rake = settings['rake']
         self.pot = settings['pot']

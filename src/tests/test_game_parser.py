@@ -35,3 +35,40 @@ def test_simple():
                 Seat 4: kem0o3a/3AcDZBJg3cdvpQ folded before Flop (didn't bet)
                 Seat 5: HX/CQJObuMVIi59AV2gnOw collected ($37.05)'''
     Parser(test)
+
+def test_showdown():
+    test = '''PokerStars Game #59937794410:  Hold'em No Limit ($0.10/$0.25) - 2009/07/01 0:00:00 ET
+                Table 'vgLbwVmy1dOb81ICg4y5+Q' 6-max Seat #6 is the button
+                Seat 2: vjkMgvG+N1YrdituSQFzbQ ($25 in chips) 
+                Seat 4: C79eKghuAVSmzDgIazSFCg ($54.75 in chips) 
+                Seat 5: 32YL2ZEp8NT4JB2RVM9euQ ($16.35 in chips) 
+                Seat 6: xRkU4+naLuz7dEZFbOn9cw ($24.65 in chips) 
+                vjkMgvG+N1YrdituSQFzbQ: posts small blind $0.10
+                C79eKghuAVSmzDgIazSFCg: posts big blind $0.25
+                *** HOLE CARDS ***
+                32YL2ZEp8NT4JB2RVM9euQ: folds 
+                xRkU4+naLuz7dEZFbOn9cw: raises $0.50 to $0.75
+                vjkMgvG+N1YrdituSQFzbQ: folds 
+                C79eKghuAVSmzDgIazSFCg: calls $0.50
+                *** FLOP *** [4d Qs 4s]
+                C79eKghuAVSmzDgIazSFCg: checks 
+                xRkU4+naLuz7dEZFbOn9cw: checks 
+                *** TURN *** [4d Qs 4s] [9h]
+                C79eKghuAVSmzDgIazSFCg: checks 
+                xRkU4+naLuz7dEZFbOn9cw: checks 
+                *** RIVER *** [4d Qs 4s 9h] [Ad]
+                C79eKghuAVSmzDgIazSFCg: checks 
+                xRkU4+naLuz7dEZFbOn9cw: checks 
+                *** SHOW DOWN ***
+                C79eKghuAVSmzDgIazSFCg: shows [8s Ah] (two pair, Aces and Fours)
+                xRkU4+naLuz7dEZFbOn9cw: mucks hand 
+                C79eKghuAVSmzDgIazSFCg collected $1.55 from pot
+                *** SUMMARY ***
+                Total pot $1.60 | Rake $0.05 
+                Board [4d Qs 4s 9h Ad]
+                Seat 2: vjkMgvG+N1YrdituSQFzbQ (small blind) folded before Flop
+                Seat 4: C79eKghuAVSmzDgIazSFCg (big blind) showed [8s Ah] and won ($1.55) with two pair, Aces and Fours
+                Seat 5: 32YL2ZEp8NT4JB2RVM9euQ folded before Flop (didn't bet)
+                Seat 6: xRkU4+naLuz7dEZFbOn9cw (button) mucked'''
+    Parser(test)
+
