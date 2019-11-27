@@ -8,9 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: PR Linter
-      uses: yogevbd/pr-lint-action@1.0.1
     - uses: actions/checkout@v1
+      with:
+        key: master
+    - name: PR Linter
+      uses: CyberZHG/github-action-python-lint@0.0.2
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
