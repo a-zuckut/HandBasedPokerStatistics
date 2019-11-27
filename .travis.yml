@@ -4,5 +4,6 @@ python:
 install:
   - "pip install nose pylint"
 script:
-  - "nosetests && pylint --errors-only"
+#   - "nosetests"
+  - "pylint"
   - cd src && pytest
