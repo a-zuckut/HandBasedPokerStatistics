@@ -4,6 +4,7 @@ This is the util function mainly for parsing data, will have more utility
 function in the future to be updated. TODO
 '''
 import os
+import re
 from card import Card
 from hand import Hand
 
@@ -39,7 +40,8 @@ def parse_info(given_str):
             if count_occurrences(line, split) < 1:
                 split = "-"
             player = line.split(split)[0].strip()
-            round1[player] = float(line.split("$")[-1])
+            if "$" in line:
+                round1[player] = float(line.split("$")[-1])
         else:
             # some incorrect key
             pass
@@ -121,8 +123,11 @@ def parse_betting_round(given_str):
     cards = []
     bets = {}
     for line in given_str:
-        if '$' in line and "collected" not in line:
-            player, line = line.split(":", 1)
+        if '$' in line and "collected" not in line and "returned" not in line:
+            split = ":"
+            if count_occurrences(line, split) < 1:
+                split = "-"
+            player, line = line.split(split, 1)
             if "raises" in line:
                 bets[player.strip()] = float(line.split("$")[-1].split(" ")[0])
             else:
@@ -142,7 +147,10 @@ def parse_showdown(given_str):
     showdown = {} #player: hand
     for line in given_str:
         if 'shows' in line:
-            player, line = line.split(":")
+            split = ":"
+            if count_occurrences(line, split) < 1:
+                split = "-"
+            player, line = line.split(split)
             hand = Hand(line[line.find('['):line.find(']')+1])
             showdown[player] = hand
         else:
@@ -157,9 +165,11 @@ def parse_summary(given_str):
     cards = []
     for full_string in given_str:
         if "pot" in full_string.lower() and "rake" in full_string.lower():
-            pot, rake = full_string.split("|")
-            setting['pot'] = float(pot.split("$")[1].strip())
-            setting['rake'] = float(rake.split("$")[1].strip())
+            pot, rake = full_string.split("|", 1)
+            potstr = pot.split("$")[1]
+            rakestr = rake.split("$")[1]
+            setting['pot'] = float(re.sub("[^[0-9.]", "", potstr.split(")")[0].strip()))
+            setting['rake'] = float(re.sub("[^[0-9.]", "", rakestr.split(")")[0].strip()))
         elif "pot" in full_string.lower():
             setting['pot'] = float(full_string.split("$")[1].split(")")[0].strip())
         elif "Board" in full_string:
@@ -168,7 +178,10 @@ def parse_summary(given_str):
                 cards = [Card(x) for x in line.split(" ")]
         elif "Seat" in full_string:
             if '$' in full_string:
-                player, amt = full_string.split(':')[-1].split('$')
+                split = ":"
+                if count_occurrences(full_string, split) < 1:
+                    split = "-"
+                player, amt = full_string.split(split)[1].split('$')
                 player = full_string.split(" ", 1)[0].strip()
                 amt = float(amt.split(")", 1)[0].strip())
                 won[player] = amt
