@@ -39,8 +39,15 @@ class Game():
 
     def settings(self):
         ''' Returns the settings as defined in game_parser as well as players '''
-        return self.settings, self._players
+        return self._settings, self._players
 
     def winning_cards(self):
         ''' returns a tuple of showdown cards and total winnings '''
         return self._showdown, self._total
+
+    def __repr__(self):
+        return_string = "Game Id: %s; Settings: %s; Total Winnings: %s; Players: %s" % \
+            (self._id, self._settings, self._total, self._players)
+        if self._showdown:
+            return return_string + "; Showdown: " + self._showdown
+        return return_string

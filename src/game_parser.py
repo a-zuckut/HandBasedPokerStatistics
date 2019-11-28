@@ -12,7 +12,7 @@ class Parser():
     '''
     def __init__(self, gamestr):
         self._separate = []
-        lines = gamestr.split('\n')
+        lines = gamestr.strip().split('\n')
         temp = []
         for line in lines:
             if '***' in line:
