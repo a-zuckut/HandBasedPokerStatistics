@@ -42,3 +42,6 @@ class Hand():
         if default[0] == default[1]:
             return default
         return default + 'o' # suited
+
+    def __hash__(self):
+        return hash(str(self))

@@ -29,7 +29,8 @@ def get_data(games):
             for player in showdown:
                 # this is assuming proper syntax
                 if showdown[player] in hand_to_profit:
-                    hand_to_profit[showdown[player]] += total[player]
+                    hand_to_profit[showdown[player]][0] += total[player] / game._settings['big_blind']
+                    hand_to_profit[showdown[player]][1] += 1
                 else:
-                    hand_to_profit[showdown[player]] = total[player]
+                    hand_to_profit[showdown[player]] = [total[player] / game._settings['big_blind'], 1]
     return hand_to_profit

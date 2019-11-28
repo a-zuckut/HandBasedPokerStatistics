@@ -51,10 +51,11 @@ class Parser():
 
         for part in self._separate:
             if "SUMMARY" in part[0]:
-                setting, won, cards = parse_summary(part)
+                setting, won, cards, hands = parse_summary(part)
                 self._settings.update(setting)
                 _final = won
                 _cards = cards
+                self._showdown.update(hands)
             elif "SHOW" in part[0] and "DOWN" in part[0]:
                 finalist = parse_showdown(part)
                 self._showdown = finalist
