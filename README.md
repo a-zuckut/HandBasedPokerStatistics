@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/a-zuckut/HandBasedPokerStatistics.svg?branch=master)](https://travis-ci.org/a-zuckut/HandBasedPokerStatistics)
+
 # HandBasedPokerStatistics
 
 ## What Parts

@@ -1,6 +1,5 @@
 # test_game_parser.py
 ''' This test tests if the parsing works for the game '''
-import pytest
 from game_parser import Parser
 
 def test_simple():
@@ -36,7 +35,7 @@ def test_simple():
         Seat 4: kem0o3a/3AcDZBJg3cdvpQ folded before Flop (didn't bet)
         Seat 5: HX/CQJObuMVIi59AV2gnOw collected ($37.05)'''
     data = Parser(test).return_game()
-    (settings, players) = data.settings()
+    (settings, _) = data.settings()
     assert settings["big_blind"] == 6
 
 def test_showdown():
@@ -75,7 +74,7 @@ def test_showdown():
         Seat 5: 32YL2ZEp8NT4JB2RVM9euQ folded before Flop (didn't bet)
         Seat 6: xRkU4+naLuz7dEZFbOn9cw (button) mucked'''
     data = Parser(test).return_game()
-    settings, players = data.settings()
+    settings, _ = data.settings()
     assert settings["big_blind"] == 0.25
 
 def test_more_functionality():
@@ -105,7 +104,7 @@ def test_more_functionality():
         Seat 5: TmKBFDTMzV3f+C/n1iWjGQ Folded on the POCKET CARDS
         Seat 6: C71mm6MhFIxjPW1vaAXL1g (dealer) Folded on the POCKET CARDS'''
     data = Parser(test).return_game()
-    settings, players = data.settings()
+    settings, _ = data.settings()
     assert settings["big_blind"] == 0.50
 
     test = '''Stage #3017237934: Holdem (1 on 1)  No Limit $0.50 - 2009-07-01 00:00:03 (ET)
@@ -124,5 +123,5 @@ def test_more_functionality():
         Seat 4: QiLz8xreFvpFCuxIwseb6A (dealer) (small blind) Folded on the POCKET CARDS
         Seat 6: t4Nq3sihzEUy18XoQoIY9w (big blind) collected Total ($0.75)'''
     data = Parser(test).return_game()
-    settings, players = data.settings()
+    settings, _ = data.settings()
     assert settings["big_blind"] == 0.50

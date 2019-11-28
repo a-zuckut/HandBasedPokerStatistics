@@ -110,13 +110,11 @@ def get_first_data(given_str):
         given_str = given_str.replace('$', "").replace(')', "")
         big_blind = float(given_str)
         return game, big_blind
-    elif count_occurrences(given_str, '$') == 1:
+    if count_occurrences(given_str, '$') == 1:
         big_blind = float(given_str.split('$', 1)[1].split(" ")[0].strip())
         return game, big_blind
-    else:
-        pass
 
-
+    raise Exception("We don't have any money?")
 
 def parse_betting_round(given_str):
     ''' This parses each betting round generically '''
@@ -179,23 +177,23 @@ def parse_summary(given_str):
             pass
     return setting, won, cards
 
-def find_file(find_file):
+def find_file(filen):
     '''
     This iterates over current directory looking for file given
     if finds file: returns path; else: return None
     '''
     for dirpath, _, files in os.walk('.'):
         for file in files:
-            if file == find_file:
+            if file == filen:
                 return dirpath + "\\" + file
     return None
 
-def count_occurrences(test_str, c):
+def count_occurrences(test_str, _ch):
     '''
     Method that counts the number of occurrences of c in test_str
     '''
     count = 0
     for i in test_str:
-        if i == c:
+        if i == _ch:
             count += 1
     return count
