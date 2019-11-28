@@ -41,11 +41,20 @@ class ParseDirectory():
     Either parses a given directory or file
     '''
 
-    def __init__(self, file_dir_name):
+    def __init__(self, file_dir_name, ignore=[]):
         directory = find_file(file_dir_name)
+        if os.path.isdir(file_dir_name):
+            directory = file_dir_name
+        if directory == None:
+            raise ValueError("Invalid directory or file")
 
         if os.path.isdir(directory):
-            pass # Not implemented
+            self.data = []
+            self.files = []
+            print("directory")
+            for file in os.listdir(directory):
+                if not file in ignore:
+                    self.data.append(ParseFile(file))
         else:
             self.data = [ParseFile(file_dir_name)]
             self.files = [file_dir_name]
@@ -54,7 +63,10 @@ class ParseDirectory():
     def parse_games(self, num=-1):
         ''' Parse games from given location '''
         for file in self.data:
-            self._games.extend(file.parse_games(num=num))
+            try:
+                self._games.extend(file.parse_games(num=num))
+            except Error as e:
+                print("Error in %s, %s" % (file, e))
         return self._games, self.files
 
     def games(self):

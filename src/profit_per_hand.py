@@ -2,21 +2,24 @@
 '''
 This will obtain parsered data and store data in file
 '''
+import os, errno
 from poker_parser import ParseDirectory
 
-LOCATION = "data/profit_per_hand"
+LOCATION = "mydata/profit_per_hand"
 
-def runner(file):
+def runner(file, save=False):
     '''
     This will run profit per hand on the directory or file given
     '''
+
     obtain_data = ParseDirectory(file)
     games, files = obtain_data.parse_games()
     hands = get_data(games)
 
     # save data and files that we just ran
-
-    return hands, files
+    if save:
+        store_data(files, "ignore.txt")
+        store_data(hands, "hands.txt")
 
 def get_data(games):
     '''
@@ -33,3 +36,15 @@ def get_data(games):
                 else:
                     hand_to_profit[showdown[player]] = total[player]
     return hand_to_profit
+
+def store_data(data, filename):
+    filename = os.path.join(LOCATION, filename)
+    if not os.path.exists(os.path.dirname(filename)):
+        try:
+            os.makedirs(os.path.dirname(filename))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+    with open(filename, 'w') as f:
+        for item in data:
+            f.write(item)
