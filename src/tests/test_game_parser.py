@@ -34,7 +34,9 @@ def test_simple():
         Seat 3: DWBdVLk+3qim/Ax0BIC30A (big blind) folded on the Flop
         Seat 4: kem0o3a/3AcDZBJg3cdvpQ folded before Flop (didn't bet)
         Seat 5: HX/CQJObuMVIi59AV2gnOw collected ($37.05)'''
-    Parser(test)
+    data = Parser(test).return_game()
+    (settings, _) = data.settings()
+    assert settings["big_blind"] == 6, "test failed"
 
 def test_showdown():
     ''' This test includes showdown functionality '''
@@ -71,4 +73,55 @@ def test_showdown():
         Seat 4: C79eKghuAVSmzDgIazSFCg (big blind) showed [8s Ah] and won ($1.55) with two pair, Aces and Fours
         Seat 5: 32YL2ZEp8NT4JB2RVM9euQ folded before Flop (didn't bet)
         Seat 6: xRkU4+naLuz7dEZFbOn9cw (button) mucked'''
-    Parser(test)
+    data = Parser(test).return_game()
+    settings, _ = data.settings()
+    assert settings["big_blind"] == 0.25, "test failed"
+
+def test_more_functionality():
+    ''' This test tests more functionality '''
+    test = '''Stage #3017235114: Holdem  No Limit $0.50 - 2009-07-01 00:00:01 (ET)
+        Table: DEFIANCE ST (Real Money) Seat #6 is the dealer
+        Seat 6 - C71mm6MhFIxjPW1vaAXL1g ($55.30 in chips)
+        Seat 2 - Qt5Yyd/Y121jtIk37c7TSg ($12.82 in chips)
+        Seat 3 - l1bCLGuFqeFRwUfPsiDu/g ($147.69 in chips)
+        Seat 4 - 13/ez0NPA4uRcBJ1Rafl6A ($17.90 in chips)
+        Seat 5 - TmKBFDTMzV3f+C/n1iWjGQ ($46.04 in chips)
+        Qt5Yyd/Y121jtIk37c7TSg - Posts small blind $0.25
+        l1bCLGuFqeFRwUfPsiDu/g - Posts big blind $0.50
+        *** POCKET CARDS ***
+        13/ez0NPA4uRcBJ1Rafl6A - Folds
+        TmKBFDTMzV3f+C/n1iWjGQ - Folds
+        C71mm6MhFIxjPW1vaAXL1g - Folds
+        Qt5Yyd/Y121jtIk37c7TSg - Folds
+        *** SHOW DOWN ***
+        l1bCLGuFqeFRwUfPsiDu/g - Does not show
+        l1bCLGuFqeFRwUfPsiDu/g Collects $0.75 from main pot
+        *** SUMMARY ***
+        Total Pot($0.75)
+        Seat 2: Qt5Yyd/Y121jtIk37c7TSg (small blind) Folded on the POCKET CARDS
+        Seat 3: l1bCLGuFqeFRwUfPsiDu/g (big blind) collected Total ($0.75)
+        Seat 4: 13/ez0NPA4uRcBJ1Rafl6A Folded on the POCKET CARDS
+        Seat 5: TmKBFDTMzV3f+C/n1iWjGQ Folded on the POCKET CARDS
+        Seat 6: C71mm6MhFIxjPW1vaAXL1g (dealer) Folded on the POCKET CARDS'''
+    data = Parser(test).return_game()
+    settings, _ = data.settings()
+    assert settings["big_blind"] == 0.50, "test failed"
+
+    test = '''Stage #3017237934: Holdem (1 on 1)  No Limit $0.50 - 2009-07-01 00:00:03 (ET)
+        Table: GERMANY HWY (Real Money) Seat #4 is the dealer
+        Seat 4 - QiLz8xreFvpFCuxIwseb6A ($14.07 in chips)
+        Seat 6 - t4Nq3sihzEUy18XoQoIY9w ($89.54 in chips)
+        QiLz8xreFvpFCuxIwseb6A - Posts small blind $0.25
+        t4Nq3sihzEUy18XoQoIY9w - Posts big blind $0.50
+        *** POCKET CARDS ***
+        QiLz8xreFvpFCuxIwseb6A - Folds
+        *** SHOW DOWN ***
+        t4Nq3sihzEUy18XoQoIY9w - Does not show
+        t4Nq3sihzEUy18XoQoIY9w Collects $0.75 from main pot
+        *** SUMMARY ***
+        Total Pot($0.75)
+        Seat 4: QiLz8xreFvpFCuxIwseb6A (dealer) (small blind) Folded on the POCKET CARDS
+        Seat 6: t4Nq3sihzEUy18XoQoIY9w (big blind) collected Total ($0.75)'''
+    data = Parser(test).return_game()
+    settings, _ = data.settings()
+    assert settings["big_blind"] == 0.50, "test failed"

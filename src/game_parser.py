@@ -12,7 +12,7 @@ class Parser():
     '''
     def __init__(self, gamestr):
         self._separate = []
-        lines = gamestr.split('\n')
+        lines = [line for line in gamestr.strip().split('\n') if line]
         temp = []
         for line in lines:
             if '***' in line:
@@ -20,13 +20,18 @@ class Parser():
                 temp = [line.strip()]
             else:
                 temp.append(line.strip())
-        self._separate.append(temp)
-        self.populate()
-        self._representation = Game(
-            self.data,
-            self._settings,
-            self._showdown
-        )
+        if temp:
+            self._separate.append(temp)
+
+        if self._separate:
+            self.populate()
+            self._representation = Game(
+                self.data,
+                self._settings,
+                self._showdown
+            )
+        else:
+            self._representation = None
 
     def populate(self):
         ''' This method will populate data for this whole function (parsing logic) '''

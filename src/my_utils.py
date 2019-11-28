@@ -3,6 +3,8 @@
 This is the util function mainly for parsing data, will have more utility
 function in the future to be updated. TODO
 '''
+import os
+import re
 from card import Card
 from hand import Hand
 
@@ -17,11 +19,14 @@ def parse_info(given_str):
     seats = {}
     num = 0
     for line in given_str:
-        if "button" in line:
+        if "button" in line or "dealer" in line:
             # if we want this logic
             pass
         elif "Seat" in line:
-            seat, temp = line.split(":")
+            split = ":"
+            if count_occurrences(line, split) < 1:
+                split = "-"
+            seat, temp = line.split(split)
             seat = num
             num += 1
             player, temp = temp.split("(", 1)
@@ -31,15 +36,19 @@ def parse_info(given_str):
             seats[player] = seat # for index 0
             seats[seat] = player
         elif "small blind" in line or "big blind" in line:
-            player = line.split(":")[0]
-            round1[player] = float(line.split("$")[-1])
+            split = ":"
+            if count_occurrences(line, split) < 1:
+                split = "-"
+            player = line.split(split)[0].strip()
+            if "$" in line:
+                round1[player] = float(line.split("$")[-1])
         else:
             # some incorrect key
             pass
 
     fill_first_seats(players, round1, setting, seats)
-
     fill_complex_seats(players, seats)
+
     return game, players, setting, (round1, [])
 
 def fill_first_seats(players, round1, setting, seats):
@@ -47,9 +56,9 @@ def fill_first_seats(players, round1, setting, seats):
     for player in players:
         if player in round1:
             if round1[player] == setting["big_blind"]:
-                players[player][0] = "big_blind"
+                players[player][0] = "Big Blind"
             else:
-                players[player][0] = "SB"
+                players[player][0] = "Small Blind"
 
     for player in players:
         if player in round1:
@@ -97,20 +106,28 @@ def get_first_data(given_str):
     game = game.split('#', 1)[1]
 
     given_str, _ = given_str.split("-", 1) # can parse date
-    given_str = given_str.split('(', 1)[1]
-    given_str = given_str.split('/')[1]
-    given_str = given_str.replace('$', "").replace(')', "")
-    big_blind = float(given_str)
-    return game, big_blind
+    if count_occurrences(given_str, '$') == 2:
+        given_str = given_str.split('(', 1)[1]
+        given_str = given_str.split('/')[1]
+        given_str = given_str.replace('$', "").replace(')', "")
+        big_blind = float(given_str)
+        return game, big_blind
+    if count_occurrences(given_str, '$') == 1:
+        big_blind = float(given_str.split('$', 1)[1].split(" ")[0].strip())
+        return game, big_blind
 
+    raise Exception("We don't have any money?")
 
 def parse_betting_round(given_str):
     ''' This parses each betting round generically '''
     cards = []
     bets = {}
     for line in given_str:
-        if '$' in line and "collected" not in line:
-            player, line = line.split(":", 1)
+        if '$' in line and "collected" not in line and "returned" not in line:
+            split = ":"
+            if count_occurrences(line, split) < 1:
+                split = "-"
+            player, line = line.split(split, 1)
             if "raises" in line:
                 bets[player.strip()] = float(line.split("$")[-1].split(" ")[0])
             else:
@@ -130,7 +147,10 @@ def parse_showdown(given_str):
     showdown = {} #player: hand
     for line in given_str:
         if 'shows' in line:
-            player, line = line.split(":")
+            split = ":"
+            if count_occurrences(line, split) < 1:
+                split = "-"
+            player, line = line.split(split)
             hand = Hand(line[line.find('['):line.find(']')+1])
             showdown[player] = hand
         else:
@@ -144,17 +164,24 @@ def parse_summary(given_str):
     won = {}
     cards = []
     for full_string in given_str:
-        if "pot" in full_string or "Rake" in full_string:
-            pot, rake = full_string.split("|")
-            setting['pot'] = float(pot.split("$")[1].strip())
-            setting['rake'] = float(rake.split("$")[1].strip())
+        if "pot" in full_string.lower() and "rake" in full_string.lower():
+            pot, rake = full_string.split("|", 1)
+            potstr = pot.split("$")[1]
+            rakestr = rake.split("$")[1]
+            setting['pot'] = float(re.sub("[^[0-9.]", "", potstr.split(")")[0].strip()))
+            setting['rake'] = float(re.sub("[^[0-9.]", "", rakestr.split(")")[0].strip()))
+        elif "pot" in full_string.lower():
+            setting['pot'] = float(full_string.split("$")[1].split(")")[0].strip())
         elif "Board" in full_string:
             if '[' in full_string:
                 line = full_string.split('[')[-1].replace("]", "")
                 cards = [Card(x) for x in line.split(" ")]
         elif "Seat" in full_string:
             if '$' in full_string:
-                player, amt = full_string.split(':')[-1].split('$')
+                split = ":"
+                if count_occurrences(full_string, split) < 1:
+                    split = "-"
+                player, amt = full_string.split(split)[1].split('$')
                 player = full_string.split(" ", 1)[0].strip()
                 amt = float(amt.split(")", 1)[0].strip())
                 won[player] = amt
@@ -162,3 +189,24 @@ def parse_summary(given_str):
             # something else
             pass
     return setting, won, cards
+
+def find_file(filen):
+    '''
+    This iterates over current directory looking for file given
+    if finds file: returns path; else: return None
+    '''
+    for dirpath, _, files in os.walk('.'):
+        for file in files:
+            if file == filen:
+                return os.path.join(dirpath, file)
+    return None
+
+def count_occurrences(test_str, _ch):
+    '''
+    Method that counts the number of occurrences of c in test_str
+    '''
+    count = 0
+    for i in test_str:
+        if i == _ch:
+            count += 1
+    return count

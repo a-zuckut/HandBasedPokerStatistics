@@ -13,6 +13,8 @@ class Hand():
         assert given_str[0] == '[' and given_str[-1] == ']'
         assert len(given_str) >= 7
 
+        if '-' in given_str:
+            given_str = given_str.split('-')[0]
         card = given_str[1:-1].split(" ")
         card1 = Card(card[0])
         card2 = Card(card[1])
