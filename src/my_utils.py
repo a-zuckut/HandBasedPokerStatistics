@@ -157,7 +157,7 @@ def parse_showdown(given_str):
             split = ":"
             if count_occurrences(line, split) < 1:
                 split = "-"
-            player,line = line.split(split)
+            player, line = line.split(split)
             line = line.lower().split("muck")[-1]
             line = line[line.find('['):line.find(']')+1]
             if line:
@@ -177,10 +177,10 @@ def parse_summary(given_str):
     for full_string in given_str:
         if "pot" in full_string.lower() and "rake" in full_string.lower():
             pot, rake = full_string.split("|", 1)
-            potstr = pot.split("$")[1]
-            rakestr = rake.split("$")[1]
-            setting['pot'] = float(re.sub("[^[0-9.]", "", potstr.split(")")[0].strip()))
-            setting['rake'] = float(re.sub("[^[0-9.]", "", rakestr.split(")")[0].strip()))
+            setting['pot'] = float(re.sub("[^[0-9.]", "",
+                                          pot.split("$")[1].split(")")[0].strip()))
+            setting['rake'] = float(re.sub("[^[0-9.]", "",
+                                           rake.split("$")[1].split(")")[0].strip()))
         elif "pot" in full_string.lower():
             setting['pot'] = float(full_string.split("$")[1].split(")")[0].strip())
         elif "Board" in full_string:
@@ -201,18 +201,16 @@ def parse_summary(given_str):
                 if count_occurrences(full_string, split) < 1:
                     split = "-"
                 try:
-                    _,full_string = full_string.split(split, 1)
+                    _, full_string = full_string.split(split, 1)
                     player = full_string.strip().split(" ")[0]
                     full_string = full_string.lower().split("muck")[-1]
-                    full_string = full_string[full_string.find('['):full_string.find(']', full_string.find('['))+1]
+                    full_string = full_string[full_string.find('['):
+                                              full_string.find(']', full_string.find('['))+1]
                     if full_string:
                         hand = Hand(full_string)
                         showdown[player.strip()] = hand
                 except ValueError:
                     continue
-        else:
-            # something else
-            pass
     return setting, won, cards, showdown
 
 def find_file(filen):

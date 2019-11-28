@@ -19,9 +19,7 @@ class Card():
         if rank == '1' and given_str[:-1] in self.ranks and len(given_str) == 3:
             rank = 'T'
         suit = given_str[-1]
-
-        if rank in lower_case:
-            rank = lower_case[rank]
+        rank = lower_case.get(rank, rank)
         assert suit in self.suits
         assert rank in self.ranks
 

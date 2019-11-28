@@ -36,12 +36,12 @@ class Parser():
     def populate(self):
         ''' This method will populate data for this whole function (parsing logic) '''
         self._settings = {}
+        self._showdown = None
         _game_id = None
         _players = {}
         _final = {}
         _rounds = []
-        _cards = []
-        self._showdown = None
+        self._cards = []
 
         # init round
         info = self._separate.pop(0)
@@ -54,8 +54,9 @@ class Parser():
                 setting, won, cards, hands = parse_summary(part)
                 self._settings.update(setting)
                 _final = won
-                _cards = cards
-                self._showdown.update(hands)
+                self._cards = cards
+                if hands:
+                    self._showdown.update(hands)
             elif "SHOW" in part[0] and "DOWN" in part[0]:
                 finalist = parse_showdown(part)
                 self._showdown = finalist
@@ -63,7 +64,7 @@ class Parser():
                 bets, cards = parse_betting_round(part)
                 _rounds.append((bets, cards))
 
-        self.data = (_game_id, _players, _rounds, _final, _cards)
+        self.data = (_game_id, _players, _rounds, _final, self._cards)
 
     def return_game(self):
         ''' This will expose the game representation '''
