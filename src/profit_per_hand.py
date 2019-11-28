@@ -2,8 +2,10 @@
 '''
 This will obtain parsered data and store data in file
 '''
-import os, errno
+import os
+import errno
 from poker_parser import ParseDirectory
+from hand import Hand
 
 LOCATION = "mydata/profit_per_hand"
 
@@ -11,15 +13,30 @@ def runner(file, save=False):
     '''
     This will run profit per hand on the directory or file given
     '''
+    ignored = list()
+    data = {}
+    if save:
+        ignored = get_list_data("ignore.txt")
+        data = get_dict_data("hands.txt")
 
-    obtain_data = ParseDirectory(file)
+    obtain_data = ParseDirectory(file, ignore=ignored)
     games, files = obtain_data.parse_games()
     hands = get_data(games)
+
+    files = set(files)
+    files.update(ignored)
+
+    for values in hands:
+        if values in data:
+            data[values] = [hands[values][0] + data[values][0],
+                            hands[values][1] + data[values][1]]
+        else:
+            data[values] = hands[values]
 
     # save data and files that we just ran
     if save:
         store_data(files, "ignore.txt")
-        store_data(hands, "hands.txt")
+        store_data(data, "hands.txt")
 
 def get_data(games):
     '''
@@ -40,7 +57,44 @@ def get_data(games):
                         game.settings()[0]['big_blind'], 1]
     return hand_to_profit
 
+def get_list_data(filename):
+    '''
+    Get list data for ignore
+    '''
+    filename = os.path.join(LOCATION, filename)
+    data = []
+    if os.path.exists(filename):
+        with open(filename, 'r') as _file:
+            line = _file.readline().replace("\n", "")
+            while line:
+                data.append(line)
+                line = _file.readline()
+    else:
+        print("Cannot Load file %s" % filename)
+    return data
+
+def get_dict_data(filename):
+    '''
+    Get dict data for profit
+    '''
+    filename = os.path.join(LOCATION, filename)
+    data = {}
+    if os.path.exists(filename):
+        with open(filename, 'r') as _file:
+            line = _file.readline()
+            while line:
+                key, value = line.split(":")
+                profit, number = value.strip().replace("[", "").replace("]", "").split(",")
+                data[Hand(key.strip(), bypass=True)] = [float(profit), int(number)]
+                line = _file.readline()
+    else:
+        print("Cannot Load file %s" % filename)
+    return data
+
 def store_data(data, filename):
+    '''
+    Store data based on types
+    '''
     filename = os.path.join(LOCATION, filename)
     if not os.path.exists(os.path.dirname(filename)):
         try:
@@ -48,6 +102,11 @@ def store_data(data, filename):
         except OSError as exc: # Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
-    with open(filename, 'w') as f:
+    with open(filename, 'w') as _file:
         for item in data:
-            f.write(item)
+            if isinstance(data, list):
+                _file.write(item + "\n")
+            elif isinstance(data, dict):
+                _file.write(str(item) + ": " + str(data[item]) + "\n")
+            elif isinstance(data, set):
+                _file.write(item + "\n")
