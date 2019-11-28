@@ -39,9 +39,9 @@ def parse_info(given_str):
             split = ":"
             if count_occurrences(line, split) < 1:
                 split = "-"
-            player = line.split(split)[0].strip()
+            player = line.split(split)[0]
             if "$" in line:
-                round1[player] = float(line.split("$")[-1])
+                round1[player.strip()] = float(line.split("$")[-1])
         else:
             # some incorrect key
             pass
@@ -146,13 +146,23 @@ def parse_showdown(given_str):
     ''' This parses the showdown screen '''
     showdown = {} #player: hand
     for line in given_str:
-        if 'shows' in line:
+        if 'shows' in line.lower():
             split = ":"
             if count_occurrences(line, split) < 1:
                 split = "-"
             player, line = line.split(split)
             hand = Hand(line[line.find('['):line.find(']')+1])
-            showdown[player] = hand
+            showdown[player.strip()] = hand
+        elif 'muck' in line.lower():
+            split = ":"
+            if count_occurrences(line, split) < 1:
+                split = "-"
+            player, line = line.split(split)
+            line = line.lower().split("muck")[-1]
+            line = line[line.find('['):line.find(']')+1]
+            if line:
+                hand = Hand(line)
+                showdown[player.strip()] = hand
         else:
             pass
     return showdown
@@ -163,13 +173,14 @@ def parse_summary(given_str):
     setting = {}
     won = {}
     cards = []
+    showdown = {}
     for full_string in given_str:
         if "pot" in full_string.lower() and "rake" in full_string.lower():
             pot, rake = full_string.split("|", 1)
-            potstr = pot.split("$")[1]
-            rakestr = rake.split("$")[1]
-            setting['pot'] = float(re.sub("[^[0-9.]", "", potstr.split(")")[0].strip()))
-            setting['rake'] = float(re.sub("[^[0-9.]", "", rakestr.split(")")[0].strip()))
+            setting['pot'] = float(re.sub("[^[0-9.]", "",
+                                          pot.split("$")[1].split(")")[0].strip()))
+            setting['rake'] = float(re.sub("[^[0-9.]", "",
+                                           rake.split("$")[1].split(")")[0].strip()))
         elif "pot" in full_string.lower():
             setting['pot'] = float(full_string.split("$")[1].split(")")[0].strip())
         elif "Board" in full_string:
@@ -182,13 +193,25 @@ def parse_summary(given_str):
                 if count_occurrences(full_string, split) < 1:
                     split = "-"
                 player, amt = full_string.split(split)[1].split('$')
-                player = full_string.split(" ", 1)[0].strip()
+                player = player.strip().split(" ", 1)[0]
                 amt = float(amt.split(")", 1)[0].strip())
-                won[player] = amt
-        else:
-            # something else
-            pass
-    return setting, won, cards
+                won[player.strip()] = amt
+            elif 'muck' in full_string.lower():
+                split = ":"
+                if count_occurrences(full_string, split) < 1:
+                    split = "-"
+                try:
+                    _, full_string = full_string.split(split, 1)
+                    player = full_string.strip().split(" ")[0]
+                    full_string = full_string.lower().split("muck")[-1]
+                    full_string = full_string[full_string.find('['):
+                                              full_string.find(']', full_string.find('['))+1]
+                    if full_string:
+                        hand = Hand(full_string)
+                        showdown[player.strip()] = hand
+                except ValueError:
+                    continue
+    return setting, won, cards, showdown
 
 def find_file(filen):
     '''
