@@ -30,10 +30,11 @@ class Game():
 
         for player in final:
             winning[player] = final[player] # ($,Hand)
-
         for player in self._players:
             if player in winning and self._bet:
                 self._total[player] = winning[player] - self._bet[player]
+            else:
+                self._total[player] = - self._bet[player]
 
         self._settings = settings
 

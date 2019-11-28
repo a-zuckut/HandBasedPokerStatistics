@@ -26,5 +26,4 @@ def test_full_file_in_dir():
 def test_profit_per_hand():
     ''' Testing ProfitPerHand logic '''
     file_name = "abs NLH handhq_1-OBFUSCATED.txt"
-    hands = runner(file_name)
-    print(hands)
+    runner(file_name)

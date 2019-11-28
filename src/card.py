@@ -11,12 +11,15 @@ class Card():
             'J', 'Q', 'K', 'A']
         self.suits = ['c', 's', 'h', 'd']
 
+        lower_case = {'j': 'J', 'q': 'Q', 'k': 'K', 'a': 'A'}
+
         given_str = given_str.strip() # remove all whitespace
         assert len(given_str) <= 3 and len(given_str) >= 2
         rank = given_str[0]
         if rank == '1' and given_str[:-1] in self.ranks and len(given_str) == 3:
             rank = 'T'
         suit = given_str[-1]
+        rank = lower_case.get(rank, rank)
         assert suit in self.suits
         assert rank in self.ranks
 
@@ -40,3 +43,6 @@ class Card():
 
     def __gt__(self, other):
         return self.ranks.index(self.rank) > self.ranks.index(other.rank)
+
+    def __hash__(self):
+        return hash(str(self))
