@@ -198,7 +198,7 @@ def find_file(filen):
     for dirpath, _, files in os.walk('.'):
         for file in files:
             if file == filen:
-                return dirpath + "\\" + file
+                return os.path.join(dirpath, file)
     return None
 
 def count_occurrences(test_str, _ch):

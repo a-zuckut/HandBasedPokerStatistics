@@ -36,7 +36,7 @@ def test_simple():
         Seat 5: HX/CQJObuMVIi59AV2gnOw collected ($37.05)'''
     data = Parser(test).return_game()
     (settings, _) = data.settings()
-    assert settings["big_blind"] == 6
+    assert settings["big_blind"] == 6, "test failed"
 
 def test_showdown():
     ''' This test includes showdown functionality '''
@@ -75,7 +75,7 @@ def test_showdown():
         Seat 6: xRkU4+naLuz7dEZFbOn9cw (button) mucked'''
     data = Parser(test).return_game()
     settings, _ = data.settings()
-    assert settings["big_blind"] == 0.25
+    assert settings["big_blind"] == 0.25, "test failed"
 
 def test_more_functionality():
     ''' This test tests more functionality '''
@@ -105,7 +105,7 @@ def test_more_functionality():
         Seat 6: C71mm6MhFIxjPW1vaAXL1g (dealer) Folded on the POCKET CARDS'''
     data = Parser(test).return_game()
     settings, _ = data.settings()
-    assert settings["big_blind"] == 0.50
+    assert settings["big_blind"] == 0.50, "test failed"
 
     test = '''Stage #3017237934: Holdem (1 on 1)  No Limit $0.50 - 2009-07-01 00:00:03 (ET)
         Table: GERMANY HWY (Real Money) Seat #4 is the dealer
@@ -124,4 +124,4 @@ def test_more_functionality():
         Seat 6: t4Nq3sihzEUy18XoQoIY9w (big blind) collected Total ($0.75)'''
     data = Parser(test).return_game()
     settings, _ = data.settings()
-    assert settings["big_blind"] == 0.50
+    assert settings["big_blind"] == 0.50, "test failed"
