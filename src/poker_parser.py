@@ -45,7 +45,7 @@ class ParseDirectory():
         directory = find_file(file_dir_name)
         if os.path.isdir(file_dir_name):
             directory = file_dir_name
-        if directory:
+        if directory is None:
             raise ValueError("Invalid directory or file")
 
         self.data = []
