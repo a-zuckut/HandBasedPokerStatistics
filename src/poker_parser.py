@@ -13,10 +13,10 @@ class ParseFile():
     '''
 
     def __init__(self, file_name):
-        filedir = find_file(file_name)
-        if not filedir:
+        self.filedir = find_file(file_name)
+        if not self.filedir:
             raise ValueError("Couldn't find file %s" % file_name)
-        self.file_lines = open(filedir, "r").read()
+        self.file_lines = open(self.filedir, "r").read()
         self._games = []
         self.data = []
 
@@ -41,20 +41,35 @@ class ParseDirectory():
     Either parses a given directory or file
     '''
 
-    def __init__(self, file_dir_name):
+    def __init__(self, file_dir_name, ignore=None):
         directory = find_file(file_dir_name)
+        if os.path.isdir(file_dir_name):
+            directory = file_dir_name
+        if directory is None:
+            raise ValueError("Invalid directory or file")
 
+        self.data = []
+        self.files = []
         if os.path.isdir(directory):
-            pass # Not implemented
+            for file in os.listdir(directory):
+                if ignore and not file in ignore:
+                    self.data.append(ParseFile(file))
         else:
-            self.data = [ParseFile(file_dir_name)]
-            self.files = [file_dir_name]
+            if ignore and not file_dir_name in ignore:
+                self.data = [ParseFile(file_dir_name)]
+                self.files = [file_dir_name]
         self._games = []
 
     def parse_games(self, num=-1):
         ''' Parse games from given location '''
         for file in self.data:
-            self._games.extend(file.parse_games(num=num))
+            try:
+                print("Parsing %s" % file.filedir)
+                self._games.extend(file.parse_games(num=num))
+            except ValueError as _e:
+                print("Error in %s, %s" % (file.filedir, _e))
+            except TypeError as _e:
+                print("Error in %s, %s" % (file.filedir, _e))
         return self._games, self.files
 
     def games(self):
