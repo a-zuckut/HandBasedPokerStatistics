@@ -44,8 +44,8 @@ def runner(file, save=False):
         if save:
             store_data(files, "ignore.txt")
             store_data(data, "hands.txt")
-
     return data
+
 
 def get_data(games):
     '''
