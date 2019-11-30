@@ -46,6 +46,7 @@ class ParseDirectory():
     '''
 
     def __init__(self, file_dir_name, ignore=None):
+        self.MAX_FILES = 100
         directory = find_file(file_dir_name)
         if os.path.isdir(file_dir_name):
             directory = file_dir_name
@@ -54,10 +55,14 @@ class ParseDirectory():
 
         self.data = []
         self.files = []
+        print(directory)
         if os.path.isdir(directory):
             for file in os.listdir(directory):
-                if ignore and not file in ignore:
+                if not ignore or (ignore and not file in ignore):
                     self.data.append(ParseFile(file))
+                    self.files.append(file)
+                if len(self.files) == self.MAX_FILES:
+                    break
         else:
             if not ignore or (ignore and not file_dir_name in ignore):
                 self.data = [ParseFile(file_dir_name)]
@@ -68,11 +73,13 @@ class ParseDirectory():
 
     def parse_games(self, num=-1):
         ''' Parse games from given location '''
+        files = []
         for file in self.data:
             try:
                 logger.info("Parsing %s", file.filedir)
                 data = file.parse_games(num=num)
                 self._games.extend(data)
+                files.append(file)
             except ValueError as _e:
                 logger.info("Error in %s\n%s", file.filedir, repr(_e))
                 traceback.print_tb(_e.__traceback__)
@@ -80,6 +87,9 @@ class ParseDirectory():
                 logger.info("Error in %s\n%s", file.filedir, repr(_e))
                 traceback.print_tb(_e.__traceback__)
             except KeyError as _e:
+                logger.info("Error in %s\n%s", file.filedir, repr(_e))
+                traceback.print_tb(_e.__traceback__)
+            except IndexError as _e:
                 logger.info("Error in %s\n%s", file.filedir, repr(_e))
                 traceback.print_tb(_e.__traceback__)
 

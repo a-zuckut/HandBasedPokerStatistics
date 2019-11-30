@@ -71,11 +71,11 @@ def get_list_data(filename):
     filename = os.path.join(LOCATION, filename)
     data = []
     if os.path.exists(filename):
+        lines = None
         with open(filename, 'r') as _file:
-            line = _file.readline().replace("\n", "")
-            while line:
-                data.append(line)
-                line = _file.readline()
+            lines = _file.read().splitlines()
+        for line in lines:
+            data.append(line)
     else:
         logger.info("Cannot Load file %s", filename)
     return data

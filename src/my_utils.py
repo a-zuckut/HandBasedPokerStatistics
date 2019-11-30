@@ -265,5 +265,6 @@ def fill_in_last_player_to_bet(rounds, finalist):
     for player in comparison:
         if not player in return_value:
             value = finalist[player]
-    return_value[key] = value
+    if key and value:
+        return_value[key] = value
     return return_value

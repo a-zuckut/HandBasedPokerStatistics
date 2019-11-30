@@ -25,10 +25,6 @@ class Game():
 
         for curr_round, _ in rounds:
             for player in curr_round:
-                if not player in self._bet:
-                    logger.info("not player in self._bet")
-                    logger.info(self._bet)
-                    logger.info(curr_round)
                 self._bet[player] += curr_round[player]
 
         self._cards = cards
