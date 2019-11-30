@@ -3,11 +3,10 @@
 This class will parse the full pokerstar string
 '''
 import log
-logger = log.get_logger(__name__)
-
 from my_utils import parse_info, parse_betting_round, parse_summary, \
                      parse_showdown, fill_in_last_player_to_bet
 from game import Game
+logger = log.get_logger(__name__)
 
 class Parser():
     '''
@@ -48,8 +47,7 @@ class Parser():
         self._cards = []
 
         # init round
-        info = self._separate.pop(0)
-        _game_id, _players, settings, round_one = parse_info(info)
+        _game_id, _players, settings, round_one = parse_info(self._separate.pop(0))
         _rounds.append(round_one)
         self._settings.update(settings)
 

@@ -2,13 +2,12 @@
 '''
 This module will parse files into games
 '''
-import log
-logger = log.get_logger(__name__)
-
 import os
 import traceback
 from game_parser import Parser
 from my_utils import find_file
+import log
+logger = log.get_logger(__name__)
 
 class ParseFile():
     '''
@@ -71,17 +70,17 @@ class ParseDirectory():
         ''' Parse games from given location '''
         for file in self.data:
             try:
-                logger.info("Parsing %s" % file.filedir)
+                logger.info("Parsing %s", file.filedir)
                 data = file.parse_games(num=num)
                 self._games.extend(data)
             except ValueError as _e:
-                logger.info("Error in %s\n%s" % (file.filedir, repr(_e)))
+                logger.info("Error in %s\n%s", file.filedir, repr(_e))
                 traceback.print_tb(_e.__traceback__)
             except TypeError as _e:
-                logger.info("Error in %s\n%s" % (file.filedir, repr(_e)))
+                logger.info("Error in %s\n%s", file.filedir, repr(_e))
                 traceback.print_tb(_e.__traceback__)
             except KeyError as _e:
-                logger.info("Error in %s\n%s" % (file.filedir, repr(_e)))
+                logger.info("Error in %s\n%s", file.filedir, repr(_e))
                 traceback.print_tb(_e.__traceback__)
 
         return self._games, self.files

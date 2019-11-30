@@ -2,14 +2,13 @@
 '''
 This will obtain parsered data and store data in file
 '''
-import log
-logger = log.get_logger(__name__)
-
 import os
 import errno
+import log
 from poker_parser import ParseDirectory
 from hand import Hand
 
+logger = log.get_logger(__name__)
 LOCATION = "mydata/profit_per_hand"
 
 def runner(file, save=False):
@@ -27,7 +26,7 @@ def runner(file, save=False):
     games, files = obtain_data.parse_games()
     logger.info("Getting hands from parsed data")
     hands = get_data(games)
-    logger.info("Hands %s" % hands)
+    logger.info("Hands %s", hands)
 
     if hands:
         logger.info("updating and storing")
@@ -78,7 +77,7 @@ def get_list_data(filename):
                 data.append(line)
                 line = _file.readline()
     else:
-        logger.info("Cannot Load file %s" % filename)
+        logger.info("Cannot Load file %s", filename)
     return data
 
 def get_dict_data(filename):
@@ -96,7 +95,7 @@ def get_dict_data(filename):
                 data[Hand(key.strip(), bypass=True)] = [float(profit), int(number)]
                 line = _file.readline()
     else:
-        logger.info("Cannot Load file %s" % filename)
+        logger.info("Cannot Load file %s", filename)
     return data
 
 def store_data(data, filename):

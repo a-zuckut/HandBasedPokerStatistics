@@ -3,13 +3,13 @@
 This is the util function mainly for parsing data, will have more utility
 function in the future to be updated. TODO
 '''
-import log
-logger = log.get_logger(__name__)
-
 import os
 import re
 from card import Card
 from hand import Hand
+import log
+logger = log.get_logger(__name__)
+
 
 def parse_info(given_str):
     '''
@@ -48,7 +48,7 @@ def parse_info(given_str):
             if player not in players:
                 players[player] = [None, float(setting['big_blind']*100)]
                 seat = num
-                num+=1
+                num += 1
                 seats[player] = seat
                 seats[seat] = player
         else:
@@ -244,23 +244,26 @@ def count_occurrences(test_str, _ch):
     return count
 
 def fill_in_last_player_to_bet(rounds, finalist):
-    comparison = [f for f in finalist]
+    '''
+    This takes in the rounds and a broken finalist dict and fixes finalists
+    '''
+    comparison = finalist
     last_round = None
-    for round in reversed(rounds):
-        player_list = round[0]
+    for curr_round in reversed(rounds):
+        player_list = curr_round[0]
         if player_list:
             last_round = list(player_list.keys())
             break
     return_value = {}
     key = None
     value = None
-    for x in last_round:
-        if not x in comparison:
-            key = x
+    for player in last_round:
+        if not player in comparison:
+            key = player
         else:
-            return_value[x] = finalist[x]
-    for x in comparison:
-        if not x in return_value:
-            value = finalist[x]
+            return_value[player] = finalist[player]
+    for player in comparison:
+        if not player in return_value:
+            value = finalist[player]
     return_value[key] = value
     return return_value
