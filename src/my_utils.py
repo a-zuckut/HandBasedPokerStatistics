@@ -3,6 +3,9 @@
 This is the util function mainly for parsing data, will have more utility
 function in the future to be updated. TODO
 '''
+import log
+logger = log.get_logger(__name__)
+
 import os
 import re
 from card import Card
@@ -39,9 +42,15 @@ def parse_info(given_str):
             split = ":"
             if count_occurrences(line, split) < 1:
                 split = "-"
-            player = line.split(split)[0]
+            player = line.split(split)[0].strip()
             if "$" in line:
                 round1[player.strip()] = float(line.split("$")[-1])
+            if player not in players:
+                players[player] = [None, float(setting['big_blind']*100)]
+                seat = num
+                num+=1
+                seats[player] = seat
+                seats[seat] = player
         else:
             # some incorrect key
             pass
@@ -181,7 +190,7 @@ def parse_summary(given_str):
                                           pot.split("$")[1].split(")")[0].strip()))
             setting['rake'] = float(re.sub("[^[0-9.]", "",
                                            rake.split("$")[1].split(")")[0].strip()))
-        elif "pot" in full_string.lower():
+        elif "Pot" in full_string or "pot" in full_string:
             setting['pot'] = float(full_string.split("$")[1].split(")")[0].strip())
         elif "Board" in full_string:
             if '[' in full_string:
@@ -233,3 +242,25 @@ def count_occurrences(test_str, _ch):
         if i == _ch:
             count += 1
     return count
+
+def fill_in_last_player_to_bet(rounds, finalist):
+    comparison = [f for f in finalist]
+    last_round = None
+    for round in reversed(rounds):
+        player_list = round[0]
+        if player_list:
+            last_round = list(player_list.keys())
+            break
+    return_value = {}
+    key = None
+    value = None
+    for x in last_round:
+        if not x in comparison:
+            key = x
+        else:
+            return_value[x] = finalist[x]
+    for x in comparison:
+        if not x in return_value:
+            value = finalist[x]
+    return_value[key] = value
+    return return_value

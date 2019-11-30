@@ -2,7 +2,11 @@
 '''
 This module will parse files into games
 '''
+import log
+logger = log.get_logger(__name__)
+
 import os
+import traceback
 from game_parser import Parser
 from my_utils import find_file
 
@@ -28,6 +32,7 @@ class ParseFile():
         ''' parses games into self._games and returns list of Game object '''
         self.split_into_games()
 
+        logger.info("parse_games")
         if num > 0:
             for i in range(num):
                 self._games.append(Parser(self.data[i]).return_game())
@@ -55,21 +60,30 @@ class ParseDirectory():
                 if ignore and not file in ignore:
                     self.data.append(ParseFile(file))
         else:
-            if ignore and not file_dir_name in ignore:
+            if not ignore or (ignore and not file_dir_name in ignore):
                 self.data = [ParseFile(file_dir_name)]
                 self.files = [file_dir_name]
         self._games = []
+
+        logger.info(self.files)
 
     def parse_games(self, num=-1):
         ''' Parse games from given location '''
         for file in self.data:
             try:
-                print("Parsing %s" % file.filedir)
-                self._games.extend(file.parse_games(num=num))
+                logger.info("Parsing %s" % file.filedir)
+                data = file.parse_games(num=num)
+                self._games.extend(data)
             except ValueError as _e:
-                print("Error in %s, %s" % (file.filedir, _e))
+                logger.info("Error in %s\n%s" % (file.filedir, repr(_e)))
+                traceback.print_tb(_e.__traceback__)
             except TypeError as _e:
-                print("Error in %s, %s" % (file.filedir, _e))
+                logger.info("Error in %s\n%s" % (file.filedir, repr(_e)))
+                traceback.print_tb(_e.__traceback__)
+            except KeyError as _e:
+                logger.info("Error in %s\n%s" % (file.filedir, repr(_e)))
+                traceback.print_tb(_e.__traceback__)
+
         return self._games, self.files
 
     def games(self):

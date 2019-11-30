@@ -2,6 +2,9 @@
 '''
 This will obtain parsered data and store data in file
 '''
+import log
+logger = log.get_logger(__name__)
+
 import os
 import errno
 from poker_parser import ParseDirectory
@@ -20,23 +23,28 @@ def runner(file, save=False):
         data = get_dict_data("hands.txt")
 
     obtain_data = ParseDirectory(file, ignore=ignored)
+    logger.info("Getting data from directory")
     games, files = obtain_data.parse_games()
+    logger.info("Getting hands from parsed data")
     hands = get_data(games)
+    logger.info("Hands %s" % hands)
 
-    files = set(files)
-    files.update(ignored)
+    if hands:
+        logger.info("updating and storing")
+        files = set(files)
+        files.update(ignored)
 
-    for values in hands:
-        if values in data:
-            data[values] = [hands[values][0] + data[values][0],
-                            hands[values][1] + data[values][1]]
-        else:
-            data[values] = hands[values]
+        for values in hands:
+            if values in data:
+                data[values] = [hands[values][0] + data[values][0],
+                                hands[values][1] + data[values][1]]
+            else:
+                data[values] = hands[values]
 
-    # save data and files that we just ran
-    if save:
-        store_data(files, "ignore.txt")
-        store_data(data, "hands.txt")
+        # save data and files that we just ran
+        if save:
+            store_data(files, "ignore.txt")
+            store_data(data, "hands.txt")
 
 def get_data(games):
     '''
@@ -70,7 +78,7 @@ def get_list_data(filename):
                 data.append(line)
                 line = _file.readline()
     else:
-        print("Cannot Load file %s" % filename)
+        logger.info("Cannot Load file %s" % filename)
     return data
 
 def get_dict_data(filename):
@@ -88,7 +96,7 @@ def get_dict_data(filename):
                 data[Hand(key.strip(), bypass=True)] = [float(profit), int(number)]
                 line = _file.readline()
     else:
-        print("Cannot Load file %s" % filename)
+        logger.info("Cannot Load file %s" % filename)
     return data
 
 def store_data(data, filename):
