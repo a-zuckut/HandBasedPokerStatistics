@@ -45,6 +45,8 @@ def runner(file, save=False):
             store_data(files, "ignore.txt")
             store_data(data, "hands.txt")
 
+    return data
+
 def get_data(games):
     '''
     Games is a list of Game object
