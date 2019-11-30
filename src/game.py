@@ -2,6 +2,8 @@
 '''
 This module will be a storage facility
 '''
+import log
+logger = log.get_logger(__name__)
 
 class Game():
     '''
