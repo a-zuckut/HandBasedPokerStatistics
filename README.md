@@ -8,7 +8,8 @@
 ProfitPerHand:
 
  - To run: ``` python main.py -D src/sample_data -F ProfitPerHand ```
- - Data in ``` mydata/profit_per_hand ```
+ - Optional ``` -v ``` argument for visualization which is stored in ``` /mydata ```
+ - Data in ``` /mydata/profit_per_hand ```
  - Data Representation by [Big Blinds of Profit, Hands played]
 
 
