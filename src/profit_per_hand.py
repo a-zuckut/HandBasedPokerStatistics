@@ -39,13 +39,12 @@ def runner(file, save=False):
                                 hands[values][1] + data[values][1]]
             else:
                 data[values] = hands[values]
-
         # save data and files that we just ran
         if save:
             store_data(files, "ignore.txt")
             store_data(data, "hands.txt")
-    return data
 
+    return data
 
 def get_data(games):
     '''

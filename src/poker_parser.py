@@ -16,10 +16,11 @@ class ParseFile():
     '''
 
     def __init__(self, file_name):
-        self.filedir = find_file(file_name)
-        if not self.filedir:
+        self.file_name = file_name
+        filedir = find_file(file_name)
+        if not filedir:
             raise ValueError("Couldn't find file %s" % file_name)
-        self.file_lines = open(self.filedir, "r").read()
+        self.file_lines = open(filedir, "r").read()
         self._games = []
         self.data = []
 
@@ -76,24 +77,24 @@ class ParseDirectory():
         files = []
         for file in self.data:
             try:
-                logger.info("Parsing %s", file.filedir)
+                logger.info("Parsing %s", file.file_name)
                 data = file.parse_games(num=num)
                 self._games.extend(data)
-                files.append(file)
+                files.append(file.file_name)
             except ValueError as _e:
-                logger.info("Error in %s\n%s", file.filedir, repr(_e))
+                logger.info("Error in %s\n%s", file.file_name, repr(_e))
                 traceback.print_tb(_e.__traceback__)
             except TypeError as _e:
-                logger.info("Error in %s\n%s", file.filedir, repr(_e))
+                logger.info("Error in %s\n%s", file.file_name, repr(_e))
                 traceback.print_tb(_e.__traceback__)
             except KeyError as _e:
-                logger.info("Error in %s\n%s", file.filedir, repr(_e))
+                logger.info("Error in %s\n%s", file.file_name, repr(_e))
                 traceback.print_tb(_e.__traceback__)
             except IndexError as _e:
-                logger.info("Error in %s\n%s", file.filedir, repr(_e))
+                logger.info("Error in %s\n%s", file.file_name, repr(_e))
                 traceback.print_tb(_e.__traceback__)
 
-        return self._games, self.files
+        return self._games, files
 
     def games(self):
         ''' Returns games '''
