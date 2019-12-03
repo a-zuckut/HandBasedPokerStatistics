@@ -2,6 +2,18 @@
 
 # HandBasedPokerStatistics
 
+## Running
+
+#### Functions
+ProfitPerHand:
+
+ - To run: ``` python main.py -D src/sample_data -F ProfitPerHand ```
+ - Optional ``` -v ``` argument for visualization which is stored in ``` /mydata ```
+ - Data in ``` /mydata/profit_per_hand ```
+ - Data Representation by [Big Blinds of Profit, Hands played]
+
+
+
 ## What Parts
 
 Data is obtained from a obfuscated data source. This is formated like:
